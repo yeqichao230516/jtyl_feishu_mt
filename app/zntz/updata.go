@@ -1,0 +1,5 @@
+package zntz
+
+func UpdataRecord() {
+
+}
