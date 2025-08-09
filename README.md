@@ -9,10 +9,10 @@ go build -o jtyl_feishu_mt main.go
 /usr/local/bin/jtyl_feishu_mt
 
 ### 后台运行程序
-`nohup ./dify_feishu_mcp`
+`nohup ./jtyl_feishu_mt`
 
 ### 查看所包含程序名的进程PID
-`pgrep -f dify_feishu_mcp`
+`pgrep -f jtyl_feishu_mt`
 
 ### 停止进程
 `kill <PID>`
@@ -21,4 +21,4 @@ go build -o jtyl_feishu_mt main.go
 `ps -p <PID>`
 
 # 查看服务是否运行
-ps aux | grep your_web_service
+ps aux | grep jtyl_feishu_mt

@@ -37,7 +37,7 @@ func ZntzOut(c *gin.Context) {
 		}
 		if zntz.QueryRecordInventoryFromCyp(updata.RecordId) < req.CommonItemOutQuantity {
 			zntz.DeleteZntzRecord(req.RecordId)
-			c.JSON(400, gin.H{"error": "库存不足"})
+			c.JSON(400, gin.H{"msg": "库存不足"})
 			return
 		}
 		updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) - req.CommonItemOutQuantity
