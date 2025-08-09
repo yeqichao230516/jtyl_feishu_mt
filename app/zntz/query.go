@@ -40,7 +40,7 @@ func QueryRecord(record_id string) model.ZntzRecord {
 
 	return record
 }
-func QueryRecordCyp(record_id string) float64 {
+func QueryRecordInventoryFromCyp(record_id string) float64 {
 	req := larkbitable.NewBatchGetAppTableRecordReqBuilder().
 		AppToken(config.AppToken).
 		TableId(config.TableId.TableIdCyp).
@@ -54,6 +54,5 @@ func QueryRecordCyp(record_id string) float64 {
 	if resp != nil && resp.Data != nil && len(resp.Data.Records) > 0 {
 		inventory, _ = resp.Data.Records[0].Fields["剩余库存"].(float64)
 	}
-
 	return inventory
 }

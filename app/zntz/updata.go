@@ -9,7 +9,7 @@ import (
 
 func UpdataRecord(num float64, tableId string, recordId string) {
 	req := larkbitable.NewUpdateAppTableRecordReqBuilder().
-		AppToken(`PGnFbf9dYaUggjsGs8NcW2Apn4b`).
+		AppToken(config.AppToken).
 		TableId(tableId).
 		RecordId(recordId).
 		AppTableRecord(larkbitable.NewAppTableRecordBuilder().
@@ -23,5 +23,4 @@ func UpdataRecord(num float64, tableId string, recordId string) {
 		service.Logger.Errorf("更新记录失败: %v", resp.Msg)
 		return
 	}
-	service.Logger.Info("记录更新成功")
 }

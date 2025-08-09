@@ -6,3 +6,6 @@
 
 # 忽略敏感配置文件
 config.yaml
+
+# 忽略编译生成的二进制文件
+jtyl_feishu_mt.exe

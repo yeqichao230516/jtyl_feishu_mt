@@ -24,6 +24,7 @@ type ZntzRecord struct {
 	CommonItemInQuantity  float64 `json:"常用品入库数量"`
 }
 type OutData struct {
+	RecordId              string  `json:"record_id"`
 	PurchaseType          string  `json:"purchase_type"`
 	CommonItemOutName     string  `json:"common_item_out_name"`
 	CommonItemOutQuantity float64 `json:"common_item_out_quantity"`

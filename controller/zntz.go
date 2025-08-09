@@ -30,13 +30,17 @@ func ZntzOut(c *gin.Context) {
 			updata.RecordId = service.GetString("record_id_记号笔")
 		case "洗衣粉":
 			updata.RecordId = service.GetString("record_id_洗衣粉")
-
 		case "洗手液":
 			updata.RecordId = service.GetString("record_id_洗手液")
 		case "工作日志本":
 			updata.RecordId = service.GetString("record_id_工作日志本")
 		}
-		updata.Inventory = zntz.QueryRecordCyp(updata.RecordId) - req.CommonItemOutQuantity
+		if zntz.QueryRecordInventoryFromCyp(updata.RecordId) < req.CommonItemOutQuantity {
+			zntz.DeleteZntzRecord(req.RecordId)
+			c.JSON(400, gin.H{"error": "库存不足"})
+			return
+		}
+		updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) - req.CommonItemOutQuantity
 		zntz.UpdataRecord(updata.Inventory, service.GetString("table_id_cyp"), updata.RecordId)
 		c.JSON(200, gin.H{"msg": "success", "data": updata})
 		return
@@ -74,7 +78,7 @@ func ZntzIn(c *gin.Context) {
 		case "工作日志本":
 			updata.RecordId = service.GetString("record_id_工作日志本")
 		}
-		updata.Inventory = zntz.QueryRecordCyp(updata.RecordId) + req.CommonItemInQuantity
+		updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) + req.CommonItemInQuantity
 		zntz.UpdataRecord(updata.Inventory, service.GetString("table_id_cyp"), updata.RecordId)
 		c.JSON(200, gin.H{"msg": "success", "data": updata})
 		return

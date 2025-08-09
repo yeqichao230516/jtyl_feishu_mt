@@ -27,7 +27,7 @@ func NewRouter() *gin.Engine {
 func RunServe() {
 
 	srv := &http.Server{
-		Addr:    "localhost:8080",
+		Addr:    "127.0.0.1:8080",
 		Handler: NewRouter(),
 	}
 
