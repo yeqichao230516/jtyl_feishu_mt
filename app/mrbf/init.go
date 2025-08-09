@@ -1,0 +1,5 @@
+package mrbf
+
+func InitConfig() {
+
+}

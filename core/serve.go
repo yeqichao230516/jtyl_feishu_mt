@@ -2,12 +2,27 @@ package core
 
 import (
 	"context"
+	"jtyl_feishu_mt/controller"
+	"jtyl_feishu_mt/service"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
+
+func NewRouter() *gin.Engine {
+	r := gin.Default()
+
+	r.GET("/ping", controller.Ping)
+
+	r.POST("/zntz/out", controller.ZntzOut)
+	r.POST("/zntz/in", controller.ZntzIn)
+
+	return r
+}
 
 func RunServe() {
 
@@ -21,18 +36,18 @@ func RunServe() {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
-			Logger.Fatalf("HTTP服务异常: %v", err)
+			service.Logger.Fatalf("HTTP服务异常: %v", err)
 		}
 	}()
 
 	<-quit
-	Logger.Info("正在关闭服务...")
+	service.Logger.Info("正在关闭服务...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
-		Logger.Errorf("强制关闭: %v", err)
+		service.Logger.Errorf("强制关闭: %v", err)
 	}
 
-	Logger.Info("所有资源已释放")
+	service.Logger.Info("所有资源已释放")
 }
