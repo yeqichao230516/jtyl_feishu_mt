@@ -5,7 +5,7 @@
 *_test.go
 
 # 忽略敏感配置文件
-config.yaml
+*.yaml
 
 # 忽略编译生成的二进制文件
-jtyl_feishu_mt.exe
+*.exe
