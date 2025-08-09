@@ -12,5 +12,8 @@ func main() {
 func initializeSystem() {
 	core.NewViper()
 	core.NewLogger()
+
+	zntz.InitConfig()
 	zntz.NewClient()
+
 }

@@ -5,5 +5,5 @@ import (
 )
 
 func TestFunction(t *testing.T) {
-	// zntz.QueryRecord()
+	// zntz.QueryRecord()..
 }
