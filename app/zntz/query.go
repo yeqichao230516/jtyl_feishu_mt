@@ -40,6 +40,21 @@ func QueryRecord(record_id string) model.ZntzRecord {
 
 	return record
 }
+
+func DataReturn(record_id string) {
+	req := larkbitable.NewBatchGetAppTableRecordReqBuilder().
+		AppToken(config.AppToken).
+		TableId(config.TableId.TableIdZntz).
+		Body(larkbitable.NewBatchGetAppTableRecordReqBodyBuilder().
+			RecordIds([]string{record_id}).
+			Build()).
+		Build()
+
+	resp, _ := client.Bitable.V1.AppTableRecord.BatchGet(context.Background(), req)
+	if resp != nil && resp.Data != nil && len(resp.Data.Records) > 0 {
+		resp.Data.Records[0].Fields["采购申请类型"] = "常用品"
+	}
+}
 func QueryRecordInventoryFromCyp(record_id string) float64 {
 	req := larkbitable.NewBatchGetAppTableRecordReqBuilder().
 		AppToken(config.AppToken).

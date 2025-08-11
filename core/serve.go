@@ -20,6 +20,7 @@ func NewRouter() *gin.Engine {
 
 	r.POST("/zntz/out", controller.ZntzOut)
 	r.POST("/zntz/in", controller.ZntzIn)
+	r.POST("/zntz/data/return", controller.ZntzDataReturn)
 
 	return r
 }
