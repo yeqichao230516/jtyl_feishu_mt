@@ -9,13 +9,13 @@ go build -o jtyl_feishu_mt main.go
 /usr/local/bin/jtyl_feishu_mt
 
 ### 后台运行程序
-`nohup ./jtyl_feishu_mt`
+nohup ./jtyl_feishu_mt
 
 ### 查看所包含程序名的进程PID
-`pgrep -f jtyl_feishu_mt`
+pgrep -f jtyl_feishu_mt
 
 ### 停止进程
-`kill <PID>`
+kill <PID>
 
 ### 检查进程是否存在
 `ps -p <PID>`
