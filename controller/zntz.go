@@ -61,12 +61,14 @@ func ZntzDataReturn(c *gin.Context) {
 		updata.RecordId = getRecordID(record.CommonItemInName)
 		updata.Inventory = zntz.QueryInventory(updata.TableId, updata.RecordId) - record.InQuantity
 		zntz.UpdataRecord(updata.Inventory, updata.TableId, updata.RecordId)
+		zntz.DeleteZntzRecord(req.RecordId)
 		service.HandleSuccess(c, updata)
 		return
 	} else if record.CommonItemOutName != "" {
 		updata.RecordId = getRecordID(record.CommonItemOutName)
 		updata.Inventory = zntz.QueryInventory(updata.TableId, updata.RecordId) + record.OutQuantity
 		zntz.UpdataRecord(updata.Inventory, updata.TableId, updata.RecordId)
+		zntz.DeleteZntzRecord(req.RecordId)
 		service.HandleSuccess(c, updata)
 		return
 	}
