@@ -12,15 +12,12 @@ var config *model.ZntzConfig
 
 func InitConfig() {
 	config = &model.ZntzConfig{
-		AppId:     service.GetString("feishu_app_id"),
-		AppSecret: service.GetString("feishu_app_secret"),
-		AppToken:  service.GetString("app_token"),
+		AppId:     service.GetString("jtyl_mt_app_id"),
+		AppSecret: service.GetString("jtyl_mt_app_secret"),
+		AppToken:  service.GetString("zntz_token"),
 		TableId: model.TableSet{
-			TableIdZntz: service.GetString("table_id_zntz"),
-			TableIdLx:   service.GetString("table_id_lx"),
-			TableIdCyp:  service.GetString("table_id_cyp"),
-			TableIdZdh:  service.GetString("table_id_zdh"),
-			TableIdZs:   service.GetString("table_id_zs"),
+			TableIdZntz: service.GetString("zntz_table_zntz"),
+			TableIdCyp:  service.GetString("zntz_table_cyp"),
 		},
 	}
 }

@@ -9,143 +9,96 @@ import (
 )
 
 func ZntzOut(c *gin.Context) {
-	var req model.OutData
+	var req model.ReqestData
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "Invalid JSON format"})
+		service.HandleError(c, 400, "Invalid JSON format", err)
 		return
 	}
+	record := zntz.QueryRecord(req.RecordId)
+
 	var updata model.UpData
-	switch req.PurchaseType {
-	case "常用品":
-		switch req.CommonItemOutName {
-		case "A4纸":
-			updata.RecordId = service.GetString("record_id_A4纸")
-		case "中性笔":
-			updata.RecordId = service.GetString("record_id_中性笔")
-		case "中性笔芯":
-			updata.RecordId = service.GetString("record_id_中性笔芯")
-		case "打印机碳粉":
-			updata.RecordId = service.GetString("record_id_打印机碳粉")
-		case "记号笔":
-			updata.RecordId = service.GetString("record_id_记号笔")
-		case "洗衣粉":
-			updata.RecordId = service.GetString("record_id_洗衣粉")
-		case "洗手液":
-			updata.RecordId = service.GetString("record_id_洗手液")
-		case "工作日志本":
-			updata.RecordId = service.GetString("record_id_工作日志本")
-		}
-		if zntz.QueryRecordInventoryFromCyp(updata.RecordId) < req.CommonItemOutQuantity {
-			zntz.DeleteZntzRecord(req.RecordId)
-			c.JSON(400, gin.H{"msg": "库存不足"})
-			return
-		}
-		updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) - req.CommonItemOutQuantity
-		zntz.UpdataRecord(updata.Inventory, service.GetString("table_id_cyp"), updata.RecordId)
-		c.JSON(200, gin.H{"msg": "success", "data": updata})
+	updata.TableId = getTableID(record.LtemType)
+	updata.RecordId = getRecordID(record.CommonItemOutName)
+
+	if zntz.QueryInventory(updata.TableId, updata.RecordId) < record.OutQuantity {
+		zntz.DeleteZntzRecord(req.RecordId)
+		service.HandleError(c, 400, "库存不足,已删除申请记录", nil)
 		return
 	}
-	// case "自动化零配件":
-	// 	updata.TableId = "tblxtyKeHorfu6SO"
-	// case "注塑零配件":
-	// 	updata.TableId = "tbl7rNQBQmnPwAvi"
-	// }
+
+	updata.Inventory = zntz.QueryInventory(updata.TableId, updata.RecordId) - record.OutQuantity
+	zntz.UpdataRecord(updata.Inventory, service.GetString("zntz_table_cyp"), updata.RecordId)
+	service.HandleSuccess(c, updata)
+
 }
 func ZntzIn(c *gin.Context) {
-	var req model.InData
+	var req model.ReqestData
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "Invalid JSON format"})
-		return
-	}
-	var updata model.UpData
-	switch req.PurchaseType {
-	case "常用品":
-		switch req.CommonItemInName {
-		case "A4纸":
-			updata.RecordId = service.GetString("record_id_A4纸")
-		case "中性笔":
-			updata.RecordId = service.GetString("record_id_中性笔")
-		case "中性笔芯":
-			updata.RecordId = service.GetString("record_id_中性笔芯")
-		case "打印机碳粉":
-			updata.RecordId = service.GetString("record_id_打印机碳粉")
-		case "记号笔":
-			updata.RecordId = service.GetString("record_id_记号笔")
-		case "洗衣粉":
-			updata.RecordId = service.GetString("record_id_洗衣粉")
-		case "洗手液":
-			updata.RecordId = service.GetString("record_id_洗手液")
-		case "工作日志本":
-			updata.RecordId = service.GetString("record_id_工作日志本")
-		}
-		updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) + req.CommonItemInQuantity
-		zntz.UpdataRecord(updata.Inventory, service.GetString("table_id_cyp"), updata.RecordId)
-		c.JSON(200, gin.H{"msg": "success", "data": updata})
-		return
-	}
-}
-
-type ZntzDataReturnRequest struct {
-	RecordId string `json:"record_id"`
-}
-
-func ZntzDataReturn(c *gin.Context) {
-	var req ZntzDataReturnRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(400, gin.H{"error": "Invalid JSON format"})
+		service.HandleError(c, 400, "Invalid JSON format", err)
 		return
 	}
 	record := zntz.QueryRecord(req.RecordId)
 	var updata model.UpData
-	switch record.PurchaseType {
-	case "常用品":
-		if record.CommonItemOutName != "" {
-			switch record.CommonItemOutName {
-			case "A4纸":
-				updata.RecordId = service.GetString("record_id_A4纸")
-			case "中性笔":
-				updata.RecordId = service.GetString("record_id_中性笔")
-			case "中性笔芯":
-				updata.RecordId = service.GetString("record_id_中性笔芯")
-			case "打印机碳粉":
-				updata.RecordId = service.GetString("record_id_打印机碳粉")
-			case "记号笔":
-				updata.RecordId = service.GetString("record_id_记号笔")
-			case "洗衣粉":
-				updata.RecordId = service.GetString("record_id_洗衣粉")
-			case "洗手液":
-				updata.RecordId = service.GetString("record_id_洗手液")
-			case "工作日志本":
-				updata.RecordId = service.GetString("record_id_工作日志本")
-			}
-			updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) + record.CommonItemOutQuantity
-			zntz.UpdataRecord(updata.Inventory, service.GetString("table_id_cyp"), updata.RecordId)
-			c.JSON(200, gin.H{"msg": "success", "data": updata})
-			return
-		} else if record.CommonItemInName != "" {
-			switch record.CommonItemInName {
-			case "A4纸":
-				updata.RecordId = service.GetString("record_id_A4纸")
-			case "中性笔":
-				updata.RecordId = service.GetString("record_id_中性笔")
-			case "中性笔芯":
-				updata.RecordId = service.GetString("record_id_中性笔芯")
-			case "打印机碳粉":
-				updata.RecordId = service.GetString("record_id_打印机碳粉")
-			case "记号笔":
-				updata.RecordId = service.GetString("record_id_记号笔")
-			case "洗衣粉":
-				updata.RecordId = service.GetString("record_id_洗衣粉")
-			case "洗手液":
-				updata.RecordId = service.GetString("record_id_洗手液")
-			case "工作日志本":
-				updata.RecordId = service.GetString("record_id_工作日志本")
-			}
-			updata.Inventory = zntz.QueryRecordInventoryFromCyp(updata.RecordId) - record.CommonItemInQuantity
-			zntz.UpdataRecord(updata.Inventory, service.GetString("table_id_cyp"), updata.RecordId)
-			c.JSON(200, gin.H{"msg": "success", "data": updata})
-			return
-		}
+	updata.TableId = getTableID(record.LtemType)
+	updata.RecordId = getRecordID(record.CommonItemInName)
 
+	updata.Inventory = zntz.QueryInventory(updata.TableId, updata.RecordId) + record.InQuantity
+	zntz.UpdataRecord(updata.Inventory, service.GetString("zntz_table_cyp"), updata.RecordId)
+	service.HandleSuccess(c, updata)
+
+}
+
+func ZntzDataReturn(c *gin.Context) {
+	var req model.ReqestData
+	if err := c.ShouldBindJSON(&req); err != nil {
+		service.HandleError(c, 400, "Invalid JSON format", err)
+		return
+	}
+	record := zntz.QueryRecord(req.RecordId)
+	var updata model.UpData
+	updata.TableId = getTableID(record.LtemType)
+	if record.CommonItemInName != "" {
+		updata.RecordId = getRecordID(record.CommonItemInName)
+		updata.Inventory = zntz.QueryInventory(updata.TableId, updata.RecordId) - record.InQuantity
+		zntz.UpdataRecord(updata.Inventory, updata.TableId, updata.RecordId)
+		service.HandleSuccess(c, updata)
+		return
+	} else if record.CommonItemOutName != "" {
+		updata.RecordId = getRecordID(record.CommonItemOutName)
+		updata.Inventory = zntz.QueryInventory(updata.TableId, updata.RecordId) + record.OutQuantity
+		zntz.UpdataRecord(updata.Inventory, updata.TableId, updata.RecordId)
+		service.HandleSuccess(c, updata)
+		return
+	}
+}
+
+func getRecordID(name string) string {
+	switch name {
+	case "A4纸":
+		return service.GetString("cyp_record_A4纸")
+	case "中性笔":
+		return service.GetString("cyp_record_中性笔")
+	case "中性笔芯":
+		return service.GetString("cyp_record_中性笔芯")
+	case "打印机碳粉":
+		return service.GetString("cyp_record_打印机碳粉")
+	case "记号笔":
+		return service.GetString("cyp_record_记号笔")
+	case "洗衣粉":
+		return service.GetString("cyp_record_洗衣粉")
+	case "洗手液":
+		return service.GetString("cyp_record_洗手液")
+	case "工作日志本":
+		return service.GetString("cyp_record_工作日志本")
+	default:
+		return ""
+	}
+}
+func getTableID(name string) string {
+	switch name {
+	case "常用品":
+		return service.GetString("zntz_table_cyp")
+	default:
+		return ""
 	}
 }

@@ -16,18 +16,15 @@ type TableSet struct {
 }
 
 type ZntzRecord struct {
-	PurchaseType string `json:"采购申请类型"`
+	LtemType string `json:"物品类型"`
 
-	CommonItemOutName     string  `json:"常用品领用名称"`
-	CommonItemOutQuantity float64 `json:"常用品领用数量"`
-	CommonItemInName      string  `json:"常用品入库名称"`
-	CommonItemInQuantity  float64 `json:"常用品入库数量"`
+	CommonItemOutName string  `json:"常用品领用名称"`
+	OutQuantity       float64 `json:"领用数量"`
+	CommonItemInName  string  `json:"常用品入库名称"`
+	InQuantity        float64 `json:"入库数量"`
 }
-type OutData struct {
-	RecordId              string  `json:"record_id"`
-	PurchaseType          string  `json:"purchase_type"`
-	CommonItemOutName     string  `json:"common_item_out_name"`
-	CommonItemOutQuantity float64 `json:"common_item_out_quantity"`
+type ReqestData struct {
+	RecordId string `json:"record_id"`
 }
 type InData struct {
 	PurchaseType         string  `json:"purchase_type"`
@@ -35,6 +32,7 @@ type InData struct {
 	CommonItemInQuantity float64 `json:"common_item_in_quantity"`
 }
 type UpData struct {
+	TableId   string
 	RecordId  string
 	Inventory float64
 }

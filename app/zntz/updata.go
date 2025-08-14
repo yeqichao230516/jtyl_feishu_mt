@@ -17,7 +17,6 @@ func UpdataRecord(num float64, tableId string, recordId string) {
 			Build()).
 		Build()
 
-	// 发起请求
 	resp, _ := client.Bitable.V1.AppTableRecord.Update(context.Background(), req)
 	if resp != nil && resp.Code != 0 {
 		service.Logger.Errorf("更新记录失败: %v", resp.Msg)

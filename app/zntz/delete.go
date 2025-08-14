@@ -15,7 +15,6 @@ func DeleteZntzRecord(recordId string) {
 		Build()
 
 	resp, _ := client.Bitable.V1.AppTableRecord.Delete(context.Background(), req)
-
 	if resp != nil && resp.Code != 0 {
 		service.Logger.Errorf("删除记录失败: %v", resp.Msg)
 		return
